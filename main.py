@@ -1,3 +1,4 @@
+"""Модуль для запуска бота"""
 import os
 import asyncio
 import logging
@@ -37,8 +38,9 @@ from handlers.talk          import talk_command, talk_choice_callback, talk_text
 
 
 async def start(update: Update, context):
+    """Приветственное сообщение при запуске /start. Отображает меню команд."""
     await update.message.reply_photo(
-        photo=open("images/Изображение 1.jpg", "rb"),
+        photo=open("images/image_ai.jpg", "rb"),
         caption=(
             "Welcome! 🤖\n\n"
             "/random  — image facts\n"
@@ -53,6 +55,7 @@ async def start(update: Update, context):
 
 
 def main():
+    """Главная точка входа. Настраивает и запускает Telegram-приложение."""
     app = ApplicationBuilder().token(TG_BOT_TOKEN).build()
 
     # ── Handlers ──────────────────────────────────────────────────────────────
@@ -88,13 +91,18 @@ def main():
     app.add_handler(CallbackQueryHandler(talk_end_callback, pattern="^end_talk$"), group=2)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, talk_text_handler), group=2)
 
+    import nest_asyncio
+    import asyncio
 
     async def run():
+        """Асинхронный запуск polling-режима."""
         await app.bot.delete_webhook(drop_pending_updates=True)
         print("✅ Bot is running via polling!")
         await app.run_polling()
 
-    asyncio.run(run())
+    if __name__ == "__main__":
+        nest_asyncio.apply()
+        asyncio.get_event_loop().run_until_complete(run())
 
 
 if __name__ == "__main__":

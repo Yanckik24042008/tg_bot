@@ -1,6 +1,12 @@
+"""Модуль с командой /quiz для космической викторины.
+
+Позволяет пользователю выбрать тему, проходить вопросы с вариантами ответов,
+получать обратную связь и финальный результат.
+"""
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 
+"""Вопросы"""
 QUIZ_QUESTIONS = {
     "Planets": [
         {
@@ -170,6 +176,7 @@ async def start_quiz(update: Update, context: CallbackContext):
     )
 
 async def choose_topic(update: Update, context: CallbackContext):
+    """Обрабатывает выбор темы и отправляет первый вопрос викторины."""
     q = update.callback_query
     await q.answer()
     topic = q.data.split("_", 1)[1]
@@ -185,6 +192,11 @@ async def choose_topic(update: Update, context: CallbackContext):
     await q.edit_message_text(f"Q1: {item['question']}", reply_markup=InlineKeyboardMarkup(kb))
 
 async def quiz_answer(update: Update, context: CallbackContext):
+    """Обрабатывает ответ пользователя на текущий вопрос викторины.
+
+        Увеличивает счёт, даёт обратную связь и переходит к следующему вопросу,
+        либо завершает викторину.
+        """
     q = update.callback_query
     await q.answer()
     _, idx_str, selected = q.data.split("_", 2)

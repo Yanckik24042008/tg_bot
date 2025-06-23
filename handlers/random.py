@@ -1,10 +1,14 @@
+"""Модуль с командой /random для вывода космических фактов.
 
+Позволяет пользователю получать случайные научные факты о космосе
+и запрашивать новые факты с помощью кнопок.
+"""
 
 import random
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 
-
+#факты
 FACTS = [
     "There are more stars in the observable universe than grains of sand on all the beaches on Earth.",
     "The Sun contains 99.86% of the mass of the entire Solar System.",

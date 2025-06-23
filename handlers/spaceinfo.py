@@ -1,3 +1,8 @@
+"""Модуль с командой /space для получения характеристик астрономических объектов.
+
+Позволяет пользователю выбрать объект из списка или ввести любое имя объекта,
+после чего GPT возвращает научные данные: массу, радиус, гравитацию, орбиту и интересный факт.
+"""
 import os
 from openai import OpenAI
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -7,6 +12,10 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 OBJECTS = ["Sun", "Earth", "Mars", "Milky Way", "Andromeda"]
 
 async def fetch_info(obj: str) -> str:
+    """Отправляет запрос в OpenAI для получения характеристик объекта.
+
+        Возвращает краткое описание: масса, радиус, гравитация, состав, расстояние и интересный факт.
+        """
     system_msg = {
         "role": "system",
         "content": (
@@ -25,7 +34,8 @@ async def fetch_info(obj: str) -> str:
     return resp.choices[0].message.content
 
 async def space_fact_command(update: Update, context: CallbackContext):
-    """Handler for /space — show preset objects + Finish."""
+    """Обрабатывает команду /space: показывает кнопки с объектами и кнопку «Finish»."""
+
     context.user_data["mode"] = "space"
 
     kb = [[InlineKeyboardButton(o, callback_data=f"space_{o}")] for o in OBJECTS]
@@ -37,7 +47,11 @@ async def space_fact_command(update: Update, context: CallbackContext):
     )
 
 async def space_fact_callback(update: Update, context: CallbackContext):
-    """Handle button presses in /space."""
+    """Обрабатывает нажатие кнопок после команды /space.
+
+    Если выбрана кнопка с объектом — показывает информацию об объекте.
+    Если выбрано «Finish» — возвращает главное меню.
+    """
     q = update.callback_query
     await q.answer()
 
@@ -46,7 +60,7 @@ async def space_fact_callback(update: Update, context: CallbackContext):
         context.user_data.pop("mode", None)
         await context.bot.send_photo(
             chat_id=q.message.chat.id,
-            photo=open("images/Изображение 1.jpg", "rb"),
+            photo=open("images/image_ai.jpg", "rb"),
             caption=(
                 "Welcome! 🤖\n\n"
                 "/random  — image facts\n"
@@ -73,7 +87,10 @@ async def space_fact_callback(update: Update, context: CallbackContext):
     )
 
 async def space_text_handler(update: Update, context: CallbackContext):
-    """Handle free-text queries after /space."""
+    """Обрабатывает ввод вручную (текст), если пользователь в режиме /space.
+
+    Отправляет название введённого объекта и выводит информацию о нём.
+    """
     if context.user_data.get("mode") != "space":
         return
 

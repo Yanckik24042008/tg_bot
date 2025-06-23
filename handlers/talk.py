@@ -1,3 +1,8 @@
+"""Модуль для ролевого общения с Эйнштейном, Хокингом и другими историческими учёными.
+
+Позволяет пользователю выбрать персонажа и вести с ним диалог от первого лица,
+используя модель OpenAI, настроенную на стиль конкретного учёного.
+"""
 import os
 from openai import OpenAI
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -5,7 +10,7 @@ from telegram.ext import CallbackContext
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-
+# Персонажи и их стили общения (system prompts)
 PERSONAS = {
     "Einstein": {
         "role": "system",
@@ -50,7 +55,7 @@ PERSONAS = {
 }
 
 async def talk_command(update: Update, context: CallbackContext):
-    """Enter persona mode."""
+    """Обрабатывает команду /talk. Запускает режим выбора персонажа."""
     context.user_data["mode"] = "talk"
     context.user_data.pop("persona", None)
 
@@ -63,7 +68,7 @@ async def talk_command(update: Update, context: CallbackContext):
     )
 
 async def talk_choice_callback(update: Update, context: CallbackContext):
-    """Persona selected → save it and send photo."""
+    """Обрабатывает выбор персонажа и отправляет его фотографию"""
     if context.user_data.get("mode") != "talk":
         return
 
@@ -91,7 +96,11 @@ async def talk_choice_callback(update: Update, context: CallbackContext):
         )
 
 async def talk_text_handler(update: Update, context: CallbackContext):
-    """Handle text only when in talk mode & persona chosen."""
+    """Обрабатывает ввод текста пользователем, когда выбран персонаж.
+
+    Отправляет сообщение модели OpenAI, настроенной под выбранного учёного,
+    и возвращает ответ от его имени.
+    """
     if context.user_data.get("mode") != "talk":
         return  # not persona mode
 
@@ -111,7 +120,7 @@ async def talk_text_handler(update: Update, context: CallbackContext):
     await update.message.reply_text(resp.choices[0].message.content)
 
 async def talk_end_callback(update: Update, context: CallbackContext):
-    """Exit persona mode."""
+    """Завершает режим общения с персонажем (/talk)."""
     if context.user_data.get("mode") != "talk":
         return
 
