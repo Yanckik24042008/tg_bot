@@ -67,7 +67,7 @@ async def events_text_handler(update: Update, context: CallbackContext):
             reply_markup=InlineKeyboardMarkup(kb),
         )
 
-    # иначе пропускаем:
+
     return
 
 async def events_finish_callback(update: Update, context: CallbackContext):

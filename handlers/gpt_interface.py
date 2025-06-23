@@ -12,7 +12,7 @@ async def gpt_interface(update: Update, context: CallbackContext):
 
     kb = [[InlineKeyboardButton("End chat", callback_data="gpt_end")]]
     await update.message.reply_photo(
-        photo=open("images/Изображение 1.jpg", "rb"),
+        photo=open("images/image_ai.jpg", "rb"),
         caption="Chat with GPT: send any message.",
         reply_markup=InlineKeyboardMarkup(kb),
     )

@@ -5,7 +5,7 @@ from telegram.ext import CallbackContext
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Все пять персон
+
 PERSONAS = {
     "Einstein": {
         "role": "system",

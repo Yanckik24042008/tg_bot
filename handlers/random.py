@@ -1,10 +1,10 @@
-# handlers/random.py
+
 
 import random
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
 
-# Расширенный список фактов (текстом, без картинок)
+
 FACTS = [
     "There are more stars in the observable universe than grains of sand on all the beaches on Earth.",
     "The Sun contains 99.86% of the mass of the entire Solar System.",
@@ -66,5 +66,5 @@ async def random_fact_callback(update: Update, context: CallbackContext):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
-        # Finish → отправляем прощальное сообщение
+
         await q.edit_message_text("Thanks for exploring these facts! 🌌")
